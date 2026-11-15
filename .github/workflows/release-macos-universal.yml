@@ -95,7 +95,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            DigitalClock-macos-universal.zip
-            digital_clock-macos-universal
+          files: DigitalClock-macos-universal.zip
           generate_release_notes: true
