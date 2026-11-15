@@ -16,6 +16,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Create tag
+      id: tag
+      run: |
+          TAG="v$(date +%Y%m%d%H%M%S)"
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
     - name: Build
       run: cargo build --verbose
     - name: Run tests
@@ -24,6 +31,7 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/clock_linux
-          asset_name: CLOCK LINUX
-          tag: ${{ github.actor }}
+          file: target/release/digital_clock
+          tag: ${{ steps.tag.outputs.tag }}
+          target_commit: main
+          overwrite: true
