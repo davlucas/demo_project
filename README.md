@@ -1,73 +1,55 @@
-# Horloge Digitale Multiplateforme (Rust + eframe/egui)
+# Horloge Digitale Multiplateforme (Rust + eframe/egui + chrono-tz)
 
-Application graphique légère affichant l'heure en temps réel au format digital, avec l'heure locale et l'heure UTC en simultané.
+Application graphique haute performance en Rust affichant l'heure digitale en temps réel, avec l'heure locale, l'heure UTC, la sélection multi-fuseaux horaires et l'internationalisation complète.
 
 ## Fonctionnalités
 
-- **Multiplateforme** : Fonctionne de manière native sur Linux (Wayland et X11), Windows et macOS.
-- **Affichage simultané** :
-  - **Heure Locale** : Heure précise, fuseau/décalage horaire (ex: UTC+01:00) et date complète.
-  - **Heure UTC** : Temps Universel Coordonné et date UTC.
-- **Options interactives** :
-  - Bascule entre format 24h et format 12h (AM/PM).
-  - Activation / désactivation de l'affichage des secondes.
-  - Activation / désactivation de l'affichage de la date.
-- **Thème sombre "digital"** : Polices monospace à haute lisibilité avec codes couleurs distincts (vert digital pour le local, cyan pour UTC).
-- **Ressources légères** : Rafraîchissement ciblé toutes les 200ms pour garantir la fluidité des secondes sans saturer le CPU/GPU.
+- **Internationalisation (i18n) complète en 5 langues** :
+  - 🇫🇷 **Français**
+  - 🇬🇧 **English** (Anglais)
+  - 🇯🇵 **日本語** (Japonais)
+  - 🇨🇳 **中文** (Chinois)
+  - 🇪🇸 **Español** (Espagnol)
+  - Changement instantané de langue en direct via un menu déroulant.
+  - La langue sélectionnée est automatiquement mémorisée dans le fichier de configuration.
+  - **Support des glyphes CJK (Japonais / Chinois)** avec détection et chargement automatique des polices système multiplateformes (Linux Noto Sans CJK / WQY, Windows YaHei / Meiryo, macOS PingFang / Hiragino).
+
+- **Multiplateforme** : Compatible nativement Linux (Wayland & X11), Windows et macOS (Binaire universel Apple Silicon + Intel).
+
+- **Horloges de référence** :
+  - **Heure Locale** (décalage UTC et date complète).
+  - **Heure UTC** (Temps Universel Coordonné de référence).
+
+- **Gestion dynamique de fuseaux horaires** :
+  - **Tri hiérarchique par Continent** traduit dans la langue sélectionnée.
+  - **Tri alphabétique des Pays / Villes** pour chaque continent.
+  - Recherche textuelle rapide pour filtrer instantanément une ville.
+  - Bouton d'ajout instantané à l'affichage principal.
+  - Bouton de suppression (`✖`) pour chaque horloge personnalisée.
+
+- **Persistance automatique (`USERDIR/.digital_clock`)** :
+  - Les fuseaux et la langue sélectionnée sont sauvegardés automatiquement dans :
+    - **Linux / macOS** : `$HOME/.digital_clock`
+    - **Windows** : `%USERPROFILE%\.digital_clock`
+  - Restaurés automatiquement au démarrage.
+
+- **Contrainte stricte de dimensions d'écran (Multi-colonnes réactif)** :
+  - Détection automatique de la résolution d'écran de l'utilisateur.
+  - **Chaque colonne est strictement limitée en hauteur** (`max_height <= résolution écran`), empêchant tout dépassement vertical.
+  - Répartition dynamique sur plusieurs colonnes avec défilement horizontal fluide si de nombreuses horloges sont ajoutées.
 
 ---
 
-## Structure du projet
+## Compilation et Lancement
 
-```
-digital_clock/
-├── Cargo.toml
-├── README.md
-└── src/
-    └── main.rs
-```
-
----
-
-## Instructions de compilation et d'exécution
-
-### 1. Prérequis système
-
-#### Sur Linux (Debian / Ubuntu) :
+### Lancement direct :
 ```bash
-sudo apt update
-sudo apt install build-essential libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev
+cd /home/david/digital_clock
+cargo run --release
 ```
 
-#### Sur Linux (Arch Linux / Manjaro) :
-```bash
-sudo pacman -S base-devel libxkbcommon
-```
-
-#### Sur Windows / macOS :
-Aucune dépendance système externe particulière requise (le compilateur Rust standard `rustc` et `cargo` suffisent).
-
----
-
-### 2. Compilation et lancement en mode développement
-
-Pour compiler et lancer immédiatement l'application :
-
-```bash
-cd digital_clock
-cargo run
-```
-
----
-
-### 3. Compilation en mode Release (Production)
-
-Pour produire un binaire optimisé et compact :
-
+### Compilation du binaire de production :
 ```bash
 cargo build --release
 ```
-
-Le binaire exécutable sera disponible dans :
-- **Linux / macOS** : `target/release/digital_clock`
-- **Windows** : `target/release/digital_clock.exe`
+L'exécutable standalone est généré dans `target/release/digital_clock`.
