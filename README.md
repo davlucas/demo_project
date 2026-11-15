@@ -44,7 +44,7 @@ Application graphique haute performance en Rust affichant l'heure digitale en te
 
 ### Lancement direct :
 ```bash
-cd /home/david/digital_clock
+cd  digital_clock
 cargo run --release
 ```
 
